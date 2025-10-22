@@ -1,8 +1,9 @@
 package com.boaspraticas.banco;
 
+import java.util.Scanner;
+
 import com.boaspraticas.banco.model.Cliente;
 import com.boaspraticas.banco.service.ClienteService;
-import java.util.Scanner;
 
 
 public class Main {

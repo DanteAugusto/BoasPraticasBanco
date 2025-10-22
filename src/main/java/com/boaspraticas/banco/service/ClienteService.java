@@ -1,8 +1,10 @@
 package com.boaspraticas.banco.service;
 
-import com.boaspraticas.banco.model.Cliente;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.boaspraticas.banco.model.Cliente;
+import com.boaspraticas.banco.util.CpfUtils;
 
 
 public class ClienteService {
@@ -26,7 +28,7 @@ public class ClienteService {
         if (cpf == null) {
             return false;
         }
-        String cpfLimpo = cpf.replaceAll("[^0-9]", "");
+        String cpfLimpo = CpfUtils.removeNonNumericCharacters(cpf);
         return clientes.stream().anyMatch(cliente -> cliente.getCpf().equals(cpfLimpo));
     }
 
