@@ -1,13 +1,16 @@
 package com.boaspraticas.banco;
 
+import java.util.List;
 import java.util.Scanner;
 
 import com.boaspraticas.banco.model.Cliente;
 import com.boaspraticas.banco.service.ClienteService;
+import com.boaspraticas.banco.service.ContaService;
 
 
 public class Main {
     private static ClienteService clienteService = new ClienteService();
+    private static ContaService contaService = new ContaService(clienteService);
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -87,7 +90,7 @@ public class Main {
     private static void listarClientes() {
         System.out.println("\n--- LISTA DE CLIENTES CADASTRADOS ---");
         
-        var clientes = clienteService.listarClientes();
+        List<Cliente> clientes = clienteService.listarClientes();
         
         if (clientes.isEmpty()) {
             System.out.println("Nenhum cliente cadastrado no sistema.");
