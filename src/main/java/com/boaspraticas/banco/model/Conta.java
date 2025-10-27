@@ -22,4 +22,6 @@ public abstract class Conta {
         this.cliente = cliente;
     }
 
+    public abstract String getTipo();
+
 }

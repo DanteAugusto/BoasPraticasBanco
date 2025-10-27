@@ -13,4 +13,8 @@ public class ContaCorrente extends Conta{
         super(numeroUnico, saldo, cliente);
     }
 
+    public String getTipo() {
+        return "corrente";
+    }
+
 }
