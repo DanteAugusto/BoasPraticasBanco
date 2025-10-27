@@ -40,7 +40,7 @@ public class ContaService {
     }
 
     public List<Conta> listarContas() {
-        List<Conta> contasOrdendas = ordenaContasPorSaldoDesc(); 
+        List<Conta> contasOrdendas = ordenaContasPorSaldoDescendente(); 
         return contasOrdendas;
     }
 
@@ -52,7 +52,7 @@ public class ContaService {
         return Arrays.asList(TipoConta.values());
     }
 
-    private List<Conta> ordenaContasPorSaldoDesc() {
+    private List<Conta> ordenaContasPorSaldoDescendente() {
         List<Conta> contasOrdenadas = new ArrayList<>(contas);
         contasOrdenadas.sort((c1, c2) -> Double.compare(c2.getSaldo(), c1.getSaldo()));        
         return contasOrdenadas;
