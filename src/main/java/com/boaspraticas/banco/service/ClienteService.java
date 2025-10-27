@@ -35,4 +35,13 @@ public class ClienteService {
     public List<Cliente> listarClientes() {
         return new ArrayList<>(clientes);
     }
+
+    public Cliente buscarClientePorCpf(String cpf) {
+        String cpfLimpo = CpfUtils.removeNonNumericCharacters(cpf);
+        return clientes.stream()
+                .filter(cliente -> cliente.getCpf().equals(cpfLimpo))
+                .findFirst()
+                .orElse(null);
+    }
+
 }

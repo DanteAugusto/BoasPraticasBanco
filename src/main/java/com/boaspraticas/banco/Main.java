@@ -1,13 +1,17 @@
 package com.boaspraticas.banco;
 
+import java.util.List;
 import java.util.Scanner;
 
 import com.boaspraticas.banco.model.Cliente;
+import com.boaspraticas.banco.model.Conta;
 import com.boaspraticas.banco.service.ClienteService;
+import com.boaspraticas.banco.service.ContaService;
 
 
 public class Main {
     private static ClienteService clienteService = new ClienteService();
+    private static ContaService contaService = new ContaService(clienteService);
     private static Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
@@ -27,6 +31,9 @@ public class Main {
                     break;
                 case 2:
                     listarClientes();
+                    break;
+                case 3:
+                    cadastrarConta();
                     break;
                 case 0:
                     continuar = false;
@@ -51,6 +58,7 @@ public class Main {
         System.out.println("===========================================");
         System.out.println("1. Cadastrar Cliente");
         System.out.println("2. Listar Clientes");
+        System.out.println("3. Cadastrar Conta");
         System.out.println("0. Sair");
         System.out.println("===========================================");
         System.out.print("Escolha uma opção: ");
@@ -87,7 +95,7 @@ public class Main {
     private static void listarClientes() {
         System.out.println("\n--- LISTA DE CLIENTES CADASTRADOS ---");
         
-        var clientes = clienteService.listarClientes();
+        List<Cliente> clientes = clienteService.listarClientes();
         
         if (clientes.isEmpty()) {
             System.out.println("Nenhum cliente cadastrado no sistema.");
@@ -105,4 +113,33 @@ public class Main {
             }
         }
     }
+
+    private static void cadastrarConta() {
+        System.out.println("\n--- CADASTRO DE CONTA ---");
+        
+        System.out.print("Digite o número único da conta: ");
+        int numUnico = scanner.nextInt();
+        
+        
+        System.out.print("Digite o saldo inicial da conta: ");
+        double saldoInicial = scanner.nextDouble();
+        scanner.nextLine(); 
+
+        System.out.print("Digite o CPF do cliente dono da conta (apenas números ou com pontuação): ");
+        String cpf = scanner.nextLine();
+        
+        System.out.print("Digite o tipo de conta que deseja criar ("+contaService.listarTiposDeConta()+"): ");
+        String tipo = scanner.nextLine();
+        
+        try {
+            Conta conta = contaService.cadastrarConta(numUnico, saldoInicial, cpf, tipo);
+            System.out.println("Conta cadastrado com sucesso!");
+            System.out.println("   Número Único: " + conta.getNumeroUnico());
+            System.out.println("   Saldo Inicial: " + conta.getSaldo());
+            System.out.println("   Tipo de conta: " + conta.getTipo());
+            System.out.println("   CPF do cliente: " + conta.getCliente().getCpfFormatado());
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro ao cadastrar conta: " + e.getMessage());
+        }
+    }            
 }
