@@ -178,12 +178,15 @@ public class Main {
     
     private static TipoConta lerTipoConta(){
         System.out.println("Digite o número do tipo de conta que deseja criar:");
-        int idx = 1;
         List<TipoConta> tiposDeConta = contaService.listarTiposDeConta();
-        for (TipoConta tipoConta : tiposDeConta) {
-            System.out.printf("%d. %s%n", idx, tipoConta.name());
-            idx++;
+        int tamanhoDeTiposDeCOnta = tiposDeConta.size();
+        for (int idx = 0; idx < tamanhoDeTiposDeCOnta; idx++) {
+            TipoConta tipoConta = tiposDeConta.get(idx);
+            System.out.printf("%d. %s%n", 
+                                idx + 1, 
+                                tipoConta.name());
         }
+
         int tipoIdx = scanner.nextInt();
         scanner.nextLine();
         if(tipoIdx < 1 || tipoIdx > tiposDeConta.size()){            
