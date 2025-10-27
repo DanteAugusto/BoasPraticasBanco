@@ -1,5 +1,7 @@
 package com.boaspraticas.banco.model;
 
+import com.boaspraticas.banco.util.Conta.TipoConta;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -13,8 +15,8 @@ public class ContaPoupanca extends Conta{
         super(numeroUnico, saldo, cliente);
     }
 
-    public String getTipo() {
-        return "poupança";
+    public TipoConta getTipo() {
+        return TipoConta.POUPANCA;
     }
 
 }
