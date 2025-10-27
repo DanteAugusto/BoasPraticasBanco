@@ -108,10 +108,10 @@ public class Main {
             System.out.println("Total de clientes: " + clientes.size());
             System.out.println();
             
-            for (int i = 0; i < clientes.size(); i++) {
-                Cliente cliente = clientes.get(i);
+            for (int idx = 0; idx < clientes.size(); idx++) {
+                Cliente cliente = clientes.get(idx);
                 System.out.printf("%d. Nome: %-30s CPF: %s%n", 
-                    (i + 1), 
+                    (idx + 1), 
                     cliente.getNome(), 
                     cliente.getCpfFormatado()
                 );
@@ -162,10 +162,10 @@ public class Main {
             System.out.println("Total de contas: " + contas.size());
             System.out.println();
             
-            for (int i = 0; i < contas.size(); i++) {
-                Conta conta = contas.get(i);
+            for (int idx = 0; idx < contas.size(); idx++) {
+                Conta conta = contas.get(idx);
                 System.out.printf("%d. Tipo: %-15s Nome do titular: %-15s CPF do titular: %s%n   Número único: %-15d Saldo: %.2f%n",
-                    (i + 1), 
+                    (idx + 1), 
                     conta.getTipo().getDescricao(), 
                     conta.getCliente().getNome(),
                     conta.getCliente().getCpfFormatado(),

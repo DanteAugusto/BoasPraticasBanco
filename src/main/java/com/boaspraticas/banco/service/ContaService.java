@@ -40,8 +40,8 @@ public class ContaService {
     }
 
     public List<Conta> listarContas() {
-        ordenaContasPorSaldoDesc(); 
-        return new ArrayList<>(contas);
+        List<Conta> contasOrdendas = ordenaContasPorSaldoDesc(); 
+        return contasOrdendas;
     }
 
     public boolean contaExiste(int numeroUnico) {
@@ -52,7 +52,9 @@ public class ContaService {
         return Arrays.asList(TipoConta.values());
     }
 
-    private void ordenaContasPorSaldoDesc() {
-        contas.sort((c1, c2) -> Double.compare(c2.getSaldo(), c1.getSaldo()));
+    private List<Conta> ordenaContasPorSaldoDesc() {
+        List<Conta> contasOrdenadas = new ArrayList<>(contas);
+        contasOrdenadas.sort((c1, c2) -> Double.compare(c2.getSaldo(), c1.getSaldo()));        
+        return contasOrdenadas;
     }
 }
