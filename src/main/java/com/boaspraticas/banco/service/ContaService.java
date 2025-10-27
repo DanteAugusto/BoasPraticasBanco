@@ -38,6 +38,7 @@ public class ContaService {
     }
 
     public List<Conta> listarContas() {
+        ordenaContasPorSaldoDesc(); 
         return new ArrayList<>(contas);
     }
 
@@ -47,5 +48,9 @@ public class ContaService {
 
     public String listarTiposDeConta() {
         return "corrente, poupança";
+    }
+
+    private void ordenaContasPorSaldoDesc() {
+        contas.sort((c1, c2) -> Double.compare(c2.getSaldo(), c1.getSaldo()));
     }
 }

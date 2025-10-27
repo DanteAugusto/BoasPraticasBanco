@@ -35,6 +35,9 @@ public class Main {
                 case 3:
                     cadastrarConta();
                     break;
+                case 4:
+                    listarContas();
+                    break;
                 case 0:
                     continuar = false;
                     System.out.println("Obrigado por usar o Sistema Bancário!");
@@ -59,6 +62,7 @@ public class Main {
         System.out.println("1. Cadastrar Cliente");
         System.out.println("2. Listar Clientes");
         System.out.println("3. Cadastrar Conta");
+        System.out.println("4. Listar Contas");
         System.out.println("0. Sair");
         System.out.println("===========================================");
         System.out.print("Escolha uma opção: ");
@@ -141,5 +145,30 @@ public class Main {
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao cadastrar conta: " + e.getMessage());
         }
-    }            
+    }
+
+    private static void listarContas() {
+        System.out.println("\n--- LISTA DE ContaS CADASTRADOS ---");
+        
+        List<Conta> contas = contaService.listarContas();
+        
+        if (contas.isEmpty()) {
+            System.out.println("Nenhum conta cadastrado no sistema.");
+        } else {
+            System.out.println("Total de contas: " + contas.size());
+            System.out.println();
+            
+            for (int i = 0; i < contas.size(); i++) {
+                Conta conta = contas.get(i);
+                System.out.printf("%d. Tipo: %-15s Nome do titular: %-15s CPF do titular: %s%n   Número único: %-15d Saldo: %.2f%n",
+                    (i + 1), 
+                    conta.getTipo(), 
+                    conta.getCliente().getNome(),
+                    conta.getCliente().getCpfFormatado(),
+                    conta.getNumeroUnico(),
+                    conta.getSaldo()
+                );
+            }
+        }
+    }        
 }
