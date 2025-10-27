@@ -7,6 +7,7 @@ import com.boaspraticas.banco.model.Cliente;
 import com.boaspraticas.banco.model.Conta;
 import com.boaspraticas.banco.service.ClienteService;
 import com.boaspraticas.banco.service.ContaService;
+import com.boaspraticas.banco.util.Conta.TipoConta;
 
 
 public class Main {
@@ -132,15 +133,18 @@ public class Main {
         System.out.print("Digite o CPF do cliente dono da conta (apenas números ou com pontuação): ");
         String cpf = scanner.nextLine();
         
-        System.out.print("Digite o tipo de conta que deseja criar ("+contaService.listarTiposDeConta()+"): ");
-        String tipo = scanner.nextLine();
+        TipoConta tipo = lerTipoConta();
+        if(tipo == null){
+            System.out.println("Tipo de conta inválido. Operação cancelada.");
+            return;
+        }
         
         try {
             Conta conta = contaService.cadastrarConta(numUnico, saldoInicial, cpf, tipo);
-            System.out.println("Conta cadastrado com sucesso!");
+            System.out.println("Conta cadastrada com sucesso!");
             System.out.println("   Número Único: " + conta.getNumeroUnico());
             System.out.println("   Saldo Inicial: " + conta.getSaldo());
-            System.out.println("   Tipo de conta: " + conta.getTipo());
+            System.out.println("   Tipo de conta: " + conta.getTipo().getDescricao());
             System.out.println("   CPF do cliente: " + conta.getCliente().getCpfFormatado());
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao cadastrar conta: " + e.getMessage());
@@ -148,7 +152,7 @@ public class Main {
     }
 
     private static void listarContas() {
-        System.out.println("\n--- LISTA DE ContaS CADASTRADOS ---");
+        System.out.println("\n--- LISTA DE CONTAS CADASTRADAS ---");
         
         List<Conta> contas = contaService.listarContas();
         
@@ -162,7 +166,7 @@ public class Main {
                 Conta conta = contas.get(i);
                 System.out.printf("%d. Tipo: %-15s Nome do titular: %-15s CPF do titular: %s%n   Número único: %-15d Saldo: %.2f%n",
                     (i + 1), 
-                    conta.getTipo(), 
+                    conta.getTipo().getDescricao(), 
                     conta.getCliente().getNome(),
                     conta.getCliente().getCpfFormatado(),
                     conta.getNumeroUnico(),
@@ -170,5 +174,21 @@ public class Main {
                 );
             }
         }
-    }        
+    }
+    
+    private static TipoConta lerTipoConta(){
+        System.out.println("Digite o número do tipo de conta que deseja criar:");
+        int idx = 1;
+        List<TipoConta> tiposDeConta = contaService.listarTiposDeConta();
+        for (TipoConta tipoConta : tiposDeConta) {
+            System.out.printf("%d. %s%n", idx, tipoConta.name());
+            idx++;
+        }
+        int tipoIdx = scanner.nextInt();
+        scanner.nextLine();
+        if(tipoIdx < 1 || tipoIdx > tiposDeConta.size()){            
+            return null;
+        }
+        return tiposDeConta.get(tipoIdx - 1);
+    }
 }

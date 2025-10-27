@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.boaspraticas.banco.model.Cliente;
-import com.boaspraticas.banco.util.CpfUtils;
+import com.boaspraticas.banco.util.Cliente.CpfUtils;
 
 
 public class ClienteService {

@@ -1,12 +1,10 @@
 package com.boaspraticas.banco.model;
 
-import java.util.Objects;
+import com.boaspraticas.banco.util.Cliente.CpfUtils;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
-
-import com.boaspraticas.banco.util.CpfUtils;
 
 @Getter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)

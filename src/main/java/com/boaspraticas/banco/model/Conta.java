@@ -1,5 +1,7 @@
 package com.boaspraticas.banco.model;
 
+import com.boaspraticas.banco.util.Conta.TipoConta;
+
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -22,6 +24,6 @@ public abstract class Conta {
         this.cliente = cliente;
     }
 
-    public abstract String getTipo();
+    public abstract TipoConta getTipo();
 
 }
