@@ -38,7 +38,7 @@ public class ContaService {
 
         return novaConta;
     }
-
+    
     public List<Conta> listarContas() {
         List<Conta> contasOrdendas = ordenaContasPorSaldoDescendente(); 
         return contasOrdendas;
@@ -50,6 +50,27 @@ public class ContaService {
 
     public List<TipoConta> listarTiposDeConta() {
         return Arrays.asList(TipoConta.values());
+    }
+
+    public Conta buscarContaPorNumero(int numeroUnico) {
+        for (Conta conta : contas) {
+            if (conta.getNumeroUnico() == numeroUnico) {
+                return conta;
+            }
+        }
+        return null;
+    }
+
+    public void depositar(int numeroUnico, double valor) {
+        Conta conta = buscarContaPorNumero(numeroUnico);
+        if (conta == null) {
+            throw new IllegalArgumentException("Conta com número " + numeroUnico + " não encontrada.");
+        }
+        if (valor <= 0) {
+            throw new IllegalArgumentException("O valor do depósito deve ser positivo.");
+        }
+
+        conta.setSaldo(conta.getSaldo() + valor);
     }
 
     private List<Conta> ordenaContasPorSaldoDescendente() {
