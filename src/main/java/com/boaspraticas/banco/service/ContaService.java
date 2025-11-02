@@ -6,6 +6,7 @@ import java.util.List;
 
 import com.boaspraticas.banco.model.Cliente;
 import com.boaspraticas.banco.model.Conta;
+import com.boaspraticas.banco.model.ContaPoupanca;
 import com.boaspraticas.banco.util.Cliente.CpfUtils;
 import com.boaspraticas.banco.util.Conta.ContaFactory;
 import com.boaspraticas.banco.util.Conta.TipoConta;
@@ -96,6 +97,42 @@ public class ContaService {
             throw new IllegalArgumentException("Conta com número " + numeroUnico + " não encontrada.");
         }
         return conta.getSaldo();
+    }
+
+    public void aplicarRendimentoContasPoupanca(double taxaRendimento) {
+        if (taxaRendimento <= 0) {
+            throw new IllegalArgumentException("A taxa de rendimento deve ser maior que zero");
+        }
+
+        List<ContaPoupanca> contasPoupanca = filtraContasPoupanca();
+        if(contasPoupanca.isEmpty()) {
+            throw new IllegalArgumentException("Não há contas poupança cadastradas para aplicar o rendimento");
+        }
+
+        for (ContaPoupanca contaPoupanca : contasPoupanca) {
+            aplicarRendimento(contaPoupanca, taxaRendimento);
+        }
+    }
+    
+    private List<ContaPoupanca> filtraContasPoupanca() {
+        List<ContaPoupanca> contasPoupanca = new ArrayList<>();
+        for (Conta conta : contas) {
+            if (conta.getTipo() == TipoConta.POUPANCA) {
+                contasPoupanca.add((ContaPoupanca) conta);
+            }
+        }
+        return contasPoupanca;
+    }
+
+    private void aplicarRendimento(ContaPoupanca conta, double taxaRendimento) {
+        double saldo = conta.getSaldo();
+        double rendimento = calcularRendimento(taxaRendimento, saldo);
+
+        depositar(conta.getNumeroUnico(), rendimento);
+    }
+
+    private double calcularRendimento(double taxaRendimento, double saldo) {
+        return saldo * (taxaRendimento / 100.0);
     }
 
     private List<Conta> ordenaContasPorSaldoDescendente() {
