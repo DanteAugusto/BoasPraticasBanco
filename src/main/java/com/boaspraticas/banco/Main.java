@@ -45,6 +45,9 @@ public class Main {
                 case 6:
                     realizarSaque();
                     break;
+                case 7:
+                    consultarSaldo();
+                    break;
                 case 0:
                     continuar = false;
                     System.out.println("Obrigado por usar o Sistema Bancário!");
@@ -72,6 +75,7 @@ public class Main {
         System.out.println("4. Listar Contas");
         System.out.println("5. Realizar Depósito");
         System.out.println("6. Realizar Saque");
+        System.out.println("7. Consultar Saldo");
         System.out.println("0. Sair");
         System.out.println("===========================================");
         System.out.print("Escolha uma opção: ");
@@ -221,6 +225,26 @@ public class Main {
             System.out.println("Erro: número ou valor inválido.");
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao realizar saque: " + e.getMessage());
+        }
+    }
+
+    private static void consultarSaldo() {
+        System.out.println("\n--- CONSULTA DE SALDO ---");
+        
+        try {
+            System.out.print("Digite o número único da conta: ");
+            int numeroUnico = Integer.parseInt(scanner.nextLine());
+
+            double saldoContaConsultada = contaService.consultarSaldo(numeroUnico);
+        
+            System.out.println("Saldo da conta encontrada:");
+            System.out.printf("   Número Único: %d%n", numeroUnico);
+            System.out.printf("   Saldo: R$ %.2f%n", saldoContaConsultada);
+
+        } catch (NumberFormatException e) {
+            System.out.println("Erro: número da conta inválido.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro ao consultar saldo: " + e.getMessage());
         }
     }
     

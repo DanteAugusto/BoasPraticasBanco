@@ -90,6 +90,14 @@ public class ContaService {
         conta.setSaldo(conta.getSaldo() - valor);
     }
 
+    public double consultarSaldo(int numeroUnico) {
+        Conta conta = buscarContaPorNumero(numeroUnico);
+        if (conta == null) {
+            throw new IllegalArgumentException("Conta com número " + numeroUnico + " não encontrada.");
+        }
+        return conta.getSaldo();
+    }
+
     private List<Conta> ordenaContasPorSaldoDescendente() {
         List<Conta> contasOrdenadas = new ArrayList<>(contas);
         contasOrdenadas.sort((c1, c2) -> Double.compare(c2.getSaldo(), c1.getSaldo()));        
