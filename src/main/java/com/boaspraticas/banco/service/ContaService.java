@@ -73,6 +73,23 @@ public class ContaService {
         conta.setSaldo(conta.getSaldo() + valor);
     }
 
+    public void sacarValorDeConta(int numeroUnico, double valor) {
+        if (valor <= 0) {
+            throw new IllegalArgumentException("O valor do saque deve ser positivo.");
+        }
+
+        Conta conta = buscarContaPorNumero(numeroUnico);
+        if (conta == null) {
+            throw new IllegalArgumentException("Conta com número " + numeroUnico + " não encontrada.");
+        }
+
+        if (conta.getSaldo() < valor) {
+            throw new IllegalArgumentException("Saldo insuficiente para realizar o saque.");
+        }
+
+        conta.setSaldo(conta.getSaldo() - valor);
+    }
+
     private List<Conta> ordenaContasPorSaldoDescendente() {
         List<Conta> contasOrdenadas = new ArrayList<>(contas);
         contasOrdenadas.sort((c1, c2) -> Double.compare(c2.getSaldo(), c1.getSaldo()));        

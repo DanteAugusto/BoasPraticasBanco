@@ -42,6 +42,9 @@ public class Main {
                 case 5:
                     depositarEmConta();
                     break;
+                case 6:
+                    realizarSaque();
+                    break;
                 case 0:
                     continuar = false;
                     System.out.println("Obrigado por usar o Sistema Bancário!");
@@ -68,6 +71,7 @@ public class Main {
         System.out.println("3. Cadastrar Conta");
         System.out.println("4. Listar Contas");
         System.out.println("5. Realizar Depósito");
+        System.out.println("6. Realizar Saque");
         System.out.println("0. Sair");
         System.out.println("===========================================");
         System.out.print("Escolha uma opção: ");
@@ -197,6 +201,26 @@ public class Main {
             System.out.println("Erro: número ou valor inválido.");
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao realizar depósito: " + e.getMessage());
+        }
+    }
+
+    private static void realizarSaque() {
+        System.out.println("\n--- SAQUE EM CONTA ---");
+        
+        try {
+            System.out.print("Digite o número único da conta para saque: ");
+            int numUnico = Integer.parseInt(scanner.nextLine());
+
+            System.out.print("Digite o valor a ser sacado: ");
+            double valor = Double.parseDouble(scanner.nextLine());
+            
+            contaService.sacarValorDeConta(numUnico, valor);
+            System.out.println("Saque realizado com sucesso!");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Erro: número ou valor inválido.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro ao realizar saque: " + e.getMessage());
         }
     }
     
