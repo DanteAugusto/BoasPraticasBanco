@@ -4,9 +4,11 @@ import com.boaspraticas.banco.util.Conta.TipoConta;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.ToString;
 
 @Getter
+@Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(includeFieldNames = true)
 public abstract class Conta {
@@ -25,5 +27,4 @@ public abstract class Conta {
     }
 
     public abstract TipoConta getTipo();
-
 }
