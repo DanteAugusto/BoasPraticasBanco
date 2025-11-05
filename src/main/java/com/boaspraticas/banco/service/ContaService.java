@@ -6,8 +6,11 @@ import java.util.List;
 
 import com.boaspraticas.banco.model.Cliente;
 import com.boaspraticas.banco.model.Conta;
+import com.boaspraticas.banco.model.ContaPoupanca;
 import com.boaspraticas.banco.util.Cliente.CpfUtils;
 import com.boaspraticas.banco.util.Conta.ContaFactory;
+import com.boaspraticas.banco.util.Conta.EstatisticasTipoConta;
+import com.boaspraticas.banco.util.Conta.RelatorioConsolidacao;
 import com.boaspraticas.banco.util.Conta.TipoConta;
 
 public class ContaService {
@@ -90,12 +93,107 @@ public class ContaService {
         conta.setSaldo(conta.getSaldo() - valor);
     }
 
+    public void transferenciaEntreContas(int numeroUnicoPagante, int numeroUnicoRecebedor, double valor) {
+        if (valor <= 0) {
+            throw new IllegalArgumentException("O valor da transferência deve ser positivo.");
+        }
+
+        Conta contaPagante = buscarContaPorNumero(numeroUnicoPagante);
+        if (contaPagante == null) {
+            throw new IllegalArgumentException("Conta pagante com número " + numeroUnicoPagante + " não encontrada.");
+        }
+
+        if (contaPagante.getSaldo() < valor) {
+            throw new IllegalArgumentException("Saldo insuficiente na conta pagante para realizar transferência.");
+        }
+
+        Conta contaRecebedora = buscarContaPorNumero(numeroUnicoRecebedor);
+        if (contaRecebedora == null) {
+            throw new IllegalArgumentException("Conta recebedora com número " + numeroUnicoRecebedor + " não encontrada.");
+        }
+
+        sacarValorDeConta(numeroUnicoPagante, valor);
+        depositar(numeroUnicoRecebedor, valor);
+    }
+
     public double consultarSaldo(int numeroUnico) {
         Conta conta = buscarContaPorNumero(numeroUnico);
         if (conta == null) {
             throw new IllegalArgumentException("Conta com número " + numeroUnico + " não encontrada.");
         }
         return conta.getSaldo();
+    }
+
+    public void aplicarRendimentoContasPoupanca(double taxaRendimento) {
+        if (taxaRendimento <= 0) {
+            throw new IllegalArgumentException("A taxa de rendimento deve ser maior que zero");
+        }
+
+        List<ContaPoupanca> contasPoupanca = filtraContasPoupanca();
+        if(contasPoupanca.isEmpty()) {
+            throw new IllegalArgumentException("Não há contas poupança cadastradas para aplicar o rendimento");
+        }
+
+        for (ContaPoupanca contaPoupanca : contasPoupanca) {
+            aplicarRendimento(contaPoupanca, taxaRendimento);
+        }
+    }
+
+    public RelatorioConsolidacao gerarRelatorioConsolidacao() {
+        List<EstatisticasTipoConta> estatisticasPorTipo = new ArrayList<>();
+        
+        for (TipoConta tipo : TipoConta.values()) {
+            long quantidade = contarContasPorTipo(tipo);
+            double saldoTotal = calcularSaldoTotalPorTipo(tipo);
+            
+            EstatisticasTipoConta estatistica = new EstatisticasTipoConta(tipo, (int) quantidade, saldoTotal);
+            estatisticasPorTipo.add(estatistica);
+        }
+        
+        int totalContasGeral = contas.size();
+        double saldoTotalGeral = calcularSaldoTotalBanco();
+        
+        return new RelatorioConsolidacao(estatisticasPorTipo, totalContasGeral, saldoTotalGeral);
+    }
+
+    private long contarContasPorTipo(TipoConta tipo) {
+        return contas.stream()
+                .filter(conta -> conta.getTipo() == tipo)
+                .count();
+    }
+
+    private double calcularSaldoTotalPorTipo(TipoConta tipo) {
+        return contas.stream()
+                .filter(conta -> conta.getTipo() == tipo)
+                .mapToDouble(Conta::getSaldo)
+                .sum();
+    }
+
+    private double calcularSaldoTotalBanco() {
+        return contas.stream()
+                .mapToDouble(Conta::getSaldo)
+                .sum();
+    }
+    
+    private List<ContaPoupanca> filtraContasPoupanca() {
+        List<ContaPoupanca> contasPoupanca = new ArrayList<>();
+        for (Conta conta : contas) {
+            if (conta.getTipo() == TipoConta.POUPANCA) {
+                contasPoupanca.add((ContaPoupanca) conta);
+            }
+        }
+        return contasPoupanca;
+    }
+
+    private void aplicarRendimento(ContaPoupanca conta, double taxaRendimento) {
+        double saldo = conta.getSaldo();
+        double rendimento = calcularRendimento(taxaRendimento, saldo);
+
+        depositar(conta.getNumeroUnico(), rendimento);
+    }
+
+    private double calcularRendimento(double taxaRendimento, double saldo) {
+        return saldo * (taxaRendimento / 100.0);
     }
 
     private List<Conta> ordenaContasPorSaldoDescendente() {
