@@ -7,6 +7,7 @@ import com.boaspraticas.banco.model.Cliente;
 import com.boaspraticas.banco.model.Conta;
 import com.boaspraticas.banco.service.ClienteService;
 import com.boaspraticas.banco.service.ContaService;
+import com.boaspraticas.banco.util.Conta.RelatorioConsolidacao;
 import com.boaspraticas.banco.util.Conta.TipoConta;
 
 
@@ -51,6 +52,9 @@ public class Main {
                 case 8:
                     aplicarRendimentoEmContasPoupanca();
                     break;
+                case 9:
+                    gerararRelatorioConsolidacao();
+                    break;
                 case 0:
                     continuar = false;
                     System.out.println("Obrigado por usar o Sistema Bancário!");
@@ -80,6 +84,7 @@ public class Main {
         System.out.println("6. Realizar Saque");
         System.out.println("7. Consultar Saldo");
         System.out.println("8. Aplicar Rendimento em Contas Poupança");
+        System.out.println("9. Relatório de Consolidação");
         System.out.println("0. Sair");
         System.out.println("===========================================");
         System.out.print("Escolha uma opção: ");
@@ -266,6 +271,17 @@ public class Main {
             System.out.println("Erro: taxa de rendimento inválida.");
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao aplicar rendimento: " + e.getMessage());
+        }
+    }
+
+    private static void gerararRelatorioConsolidacao() {
+        System.out.println("\n--- RELATÓRIO DE CONSOLIDAÇÃO ---");
+        
+        try {
+            RelatorioConsolidacao relatorio = contaService.gerarRelatorioConsolidacao();
+            System.out.println("\n" + relatorio.toString());
+        } catch (Exception e) {
+            System.out.println("Erro ao gerar relatório: " + e.getMessage());
         }
     }
     

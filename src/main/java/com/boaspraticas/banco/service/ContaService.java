@@ -9,6 +9,8 @@ import com.boaspraticas.banco.model.Conta;
 import com.boaspraticas.banco.model.ContaPoupanca;
 import com.boaspraticas.banco.util.Cliente.CpfUtils;
 import com.boaspraticas.banco.util.Conta.ContaFactory;
+import com.boaspraticas.banco.util.Conta.EstatisticasTipoConta;
+import com.boaspraticas.banco.util.Conta.RelatorioConsolidacao;
 import com.boaspraticas.banco.util.Conta.TipoConta;
 
 public class ContaService {
@@ -112,6 +114,42 @@ public class ContaService {
         for (ContaPoupanca contaPoupanca : contasPoupanca) {
             aplicarRendimento(contaPoupanca, taxaRendimento);
         }
+    }
+
+    public RelatorioConsolidacao gerarRelatorioConsolidacao() {
+        List<EstatisticasTipoConta> estatisticasPorTipo = new ArrayList<>();
+        
+        for (TipoConta tipo : TipoConta.values()) {
+            long quantidade = contarContasPorTipo(tipo);
+            double saldoTotal = calcularSaldoTotalPorTipo(tipo);
+            
+            EstatisticasTipoConta estatistica = new EstatisticasTipoConta(tipo, (int) quantidade, saldoTotal);
+            estatisticasPorTipo.add(estatistica);
+        }
+        
+        int totalContasGeral = contas.size();
+        double saldoTotalGeral = calcularSaldoTotalBanco();
+        
+        return new RelatorioConsolidacao(estatisticasPorTipo, totalContasGeral, saldoTotalGeral);
+    }
+
+    private long contarContasPorTipo(TipoConta tipo) {
+        return contas.stream()
+                .filter(conta -> conta.getTipo() == tipo)
+                .count();
+    }
+
+    private double calcularSaldoTotalPorTipo(TipoConta tipo) {
+        return contas.stream()
+                .filter(conta -> conta.getTipo() == tipo)
+                .mapToDouble(Conta::getSaldo)
+                .sum();
+    }
+
+    private double calcularSaldoTotalBanco() {
+        return contas.stream()
+                .mapToDouble(Conta::getSaldo)
+                .sum();
     }
     
     private List<ContaPoupanca> filtraContasPoupanca() {
