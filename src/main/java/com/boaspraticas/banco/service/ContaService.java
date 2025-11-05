@@ -93,6 +93,29 @@ public class ContaService {
         conta.setSaldo(conta.getSaldo() - valor);
     }
 
+    public void transferenciaEntreContas(int numeroUnicoPagante, int numeroUnicoRecebedor, double valor) {
+        if (valor <= 0) {
+            throw new IllegalArgumentException("O valor da transferência deve ser positivo.");
+        }
+
+        Conta contaPagante = buscarContaPorNumero(numeroUnicoPagante);
+        if (contaPagante == null) {
+            throw new IllegalArgumentException("Conta pagante com número " + numeroUnicoPagante + " não encontrada.");
+        }
+
+        if (contaPagante.getSaldo() < valor) {
+            throw new IllegalArgumentException("Saldo insuficiente na conta pagante para realizar transferência.");
+        }
+
+        Conta contaRecebedora = buscarContaPorNumero(numeroUnicoRecebedor);
+        if (contaRecebedora == null) {
+            throw new IllegalArgumentException("Conta recebedora com número " + numeroUnicoRecebedor + " não encontrada.");
+        }
+
+        sacarValorDeConta(numeroUnicoPagante, valor);
+        depositar(numeroUnicoRecebedor, valor);
+    }
+
     public double consultarSaldo(int numeroUnico) {
         Conta conta = buscarContaPorNumero(numeroUnico);
         if (conta == null) {

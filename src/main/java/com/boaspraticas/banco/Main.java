@@ -47,13 +47,16 @@ public class Main {
                     realizarSaque();
                     break;
                 case 7:
-                    consultarSaldo();
+                    realizarTransferencia();
                     break;
                 case 8:
-                    aplicarRendimentoEmContasPoupanca();
+                    consultarSaldo();
                     break;
                 case 9:
-                    gerararRelatorioConsolidacao();
+                    aplicarRendimentoEmContasPoupanca();
+                    break;
+                case 10:
+                    gerarRelatorioConsolidacao();
                     break;
                 case 0:
                     continuar = false;
@@ -82,9 +85,10 @@ public class Main {
         System.out.println("4. Listar Contas");
         System.out.println("5. Realizar Depósito");
         System.out.println("6. Realizar Saque");
-        System.out.println("7. Consultar Saldo");
-        System.out.println("8. Aplicar Rendimento em Contas Poupança");
-        System.out.println("9. Relatório de Consolidação");
+        System.out.println("7. Realizar Transferência");
+        System.out.println("8. Consultar Saldo");
+        System.out.println("9. Aplicar Rendimento em Contas Poupança");
+        System.out.println("10. Relatório de Consolidação");
         System.out.println("0. Sair");
         System.out.println("===========================================");
         System.out.print("Escolha uma opção: ");
@@ -144,23 +148,17 @@ public class Main {
         System.out.println("\n--- CADASTRO DE CONTA ---");
         
         System.out.print("Digite o número único da conta: ");
-        int numUnico = scanner.nextInt();
+        int numUnico = Integer.parseInt(scanner.nextLine());
         
         
         System.out.print("Digite o saldo inicial da conta: ");
-        double saldoInicial = scanner.nextDouble();
-        scanner.nextLine(); 
+        double saldoInicial = Double.parseDouble(scanner.nextLine());
 
         System.out.print("Digite o CPF do cliente dono da conta (apenas números ou com pontuação): ");
         String cpf = scanner.nextLine();
         
-        TipoConta tipo = lerTipoConta();
-        if(tipo == null){
-            System.out.println("Tipo de conta inválido. Operação cancelada.");
-            return;
-        }
-        
         try {
+            TipoConta tipo = lerTipoConta();        
             Conta conta = contaService.cadastrarConta(numUnico, saldoInicial, cpf, tipo);
             System.out.println("Conta cadastrada com sucesso!");
             System.out.println("   Número Único: " + conta.getNumeroUnico());
@@ -236,6 +234,29 @@ public class Main {
             System.out.println("Erro ao realizar saque: " + e.getMessage());
         }
     }
+    
+    private static void realizarTransferencia() {
+        System.out.println("\n--- TRANSFERÊNCIA ENTRE CONTAS ---");
+        
+        try {
+            System.out.print("Digite o número único da conta pagante: ");
+            int numUnicoPagante = Integer.parseInt(scanner.nextLine());
+
+            System.out.print("Digite o número único da conta recebedora: ");
+            int numUnicoRecebedora = Integer.parseInt(scanner.nextLine());
+
+            System.out.print("Digite o valor a ser transferido: ");
+            double valor = Double.parseDouble(scanner.nextLine());
+            
+            contaService.transferenciaEntreContas(numUnicoPagante, numUnicoRecebedora, valor);
+            System.out.println("Transferência realizada com sucesso!");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Erro: número ou valor inválido.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro ao realizar transferência: " + e.getMessage());
+        }
+    }
 
     private static void consultarSaldo() {
         System.out.println("\n--- CONSULTA DE SALDO ---");
@@ -274,7 +295,7 @@ public class Main {
         }
     }
 
-    private static void gerararRelatorioConsolidacao() {
+    private static void gerarRelatorioConsolidacao() {
         System.out.println("\n--- RELATÓRIO DE CONSOLIDAÇÃO ---");
         
         try {
@@ -296,10 +317,9 @@ public class Main {
                                 tipoConta.name());
         }
 
-        int tipoIdx = scanner.nextInt();
-        scanner.nextLine();
+        int tipoIdx = Integer.parseInt(scanner.nextLine());
         if(tipoIdx < 1 || tipoIdx > tiposDeConta.size()){            
-            return null;
+            throw new IllegalArgumentException("Tipo de conta inválido. Operação cancelada.");
         }
         return tiposDeConta.get(tipoIdx - 1);
     }
