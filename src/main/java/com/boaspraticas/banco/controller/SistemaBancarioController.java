@@ -7,6 +7,7 @@ import com.boaspraticas.banco.model.Cliente;
 import com.boaspraticas.banco.model.Conta;
 import com.boaspraticas.banco.service.ClienteService;
 import com.boaspraticas.banco.service.ContaService;
+import com.boaspraticas.banco.util.Conta.RelatorioConsolidacao;
 import com.boaspraticas.banco.util.Conta.TipoConta;
 
 public class SistemaBancarioController {
@@ -14,6 +15,93 @@ public class SistemaBancarioController {
     private static ContaService contaService = new ContaService(clienteService);
     private static Scanner scanner = new Scanner(System.in);
 
+    public void iniciarSistema(){
+        System.out.println("===========================================");
+        System.out.println("     SISTEMA BANCÁRIO - BOAS PRÁTICAS      ");
+        System.out.println("===========================================");
+        
+        boolean continuar = true;
+        
+        while (continuar) {
+            exibirMenu();
+            int opcao = lerOpcao();
+            
+            switch (opcao) {
+                case 1:
+                    cadastrarCliente();
+                    break;
+                case 2:
+                    listarClientes();
+                    break;
+                case 3:
+                    cadastrarConta();
+                    break;
+                case 4:
+                    listarContas();
+                    break;
+                case 5:
+                    depositarEmConta();
+                    break;
+                case 6:
+                    realizarSaque();
+                    break;
+                case 7:
+                    realizarTransferencia();
+                    break;
+                case 8:
+                    consultarSaldo();
+                    break;
+                case 9:
+                    aplicarRendimentoEmContasPoupanca();
+                    break;
+                case 10:
+                    gerarRelatorioConsolidacao();
+                    break;
+                case 0:
+                    continuar = false;
+                    System.out.println("Obrigado por usar o Sistema Bancário!");
+                    break;
+                default:
+                    System.out.println("Opção inválida! Tente novamente.");
+            }
+            
+            if (continuar) {
+                System.out.println("\nPressione Enter para continuar...");
+                scanner.nextLine();
+            }
+        }
+        
+        scanner.close();
+    }
+
+    public void exibirMenu() {
+        System.out.println("\n===========================================");
+        System.out.println("              MENU PRINCIPAL");
+        System.out.println("===========================================");
+        System.out.println("1. Cadastrar Cliente");
+        System.out.println("2. Listar Clientes");
+        System.out.println("3. Cadastrar Conta");
+        System.out.println("4. Listar Contas");
+        System.out.println("5. Realizar Depósito");
+        System.out.println("6. Realizar Saque");
+        System.out.println("7. Realizar Transferência");
+        System.out.println("8. Consultar Saldo");
+        System.out.println("9. Aplicar Rendimento em Contas Poupança");
+        System.out.println("10. Relatório de Consolidação");
+        System.out.println("0. Sair");
+        System.out.println("===========================================");
+        System.out.print("Escolha uma opção: ");
+    }
+    
+    public int lerOpcao() {
+        try {
+            int opcao = Integer.parseInt(scanner.nextLine());
+            return opcao;
+        } catch (NumberFormatException e) {
+            return -1;
+        }
+    }
+    
     public void cadastrarCliente() {
         System.out.println("\n--- CADASTRO DE CLIENTE ---");
         
@@ -59,23 +147,17 @@ public class SistemaBancarioController {
         System.out.println("\n--- CADASTRO DE CONTA ---");
         
         System.out.print("Digite o número único da conta: ");
-        int numUnico = scanner.nextInt();
+        int numUnico = Integer.parseInt(scanner.nextLine());
         
         
         System.out.print("Digite o saldo inicial da conta: ");
-        double saldoInicial = scanner.nextDouble();
-        scanner.nextLine(); 
+        double saldoInicial = Double.parseDouble(scanner.nextLine());
 
         System.out.print("Digite o CPF do cliente dono da conta (apenas números ou com pontuação): ");
         String cpf = scanner.nextLine();
         
-        TipoConta tipo = lerTipoConta();
-        if(tipo == null){
-            System.out.println("Tipo de conta inválido. Operação cancelada.");
-            return;
-        }
-        
         try {
+            TipoConta tipo = lerTipoConta();        
             Conta conta = contaService.cadastrarConta(numUnico, saldoInicial, cpf, tipo);
             System.out.println("Conta cadastrada com sucesso!");
             System.out.println("   Número Único: " + conta.getNumeroUnico());
@@ -152,6 +234,29 @@ public class SistemaBancarioController {
         }
     }
 
+    public void realizarTransferencia() {
+        System.out.println("\n--- TRANSFERÊNCIA ENTRE CONTAS ---");
+        
+        try {
+            System.out.print("Digite o número único da conta pagante: ");
+            int numUnicoPagante = Integer.parseInt(scanner.nextLine());
+
+            System.out.print("Digite o número único da conta recebedora: ");
+            int numUnicoRecebedora = Integer.parseInt(scanner.nextLine());
+
+            System.out.print("Digite o valor a ser transferido: ");
+            double valor = Double.parseDouble(scanner.nextLine());
+            
+            contaService.transferenciaEntreContas(numUnicoPagante, numUnicoRecebedora, valor);
+            System.out.println("Transferência realizada com sucesso!");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Erro: número ou valor inválido.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro ao realizar transferência: " + e.getMessage());
+        }
+    }
+    
     public void consultarSaldo() {
         System.out.println("\n--- CONSULTA DE SALDO ---");
         
@@ -172,6 +277,34 @@ public class SistemaBancarioController {
         }
     }
     
+    public void aplicarRendimentoEmContasPoupanca() {
+        System.out.println("\n--- APLICAR RENDIMENTO EM CONTAS POUPANÇA ---");
+        
+        try {
+            System.out.print("Digite a taxa de rendimento (em %): ");
+            double taxaRendimento = Double.parseDouble(scanner.nextLine());
+
+            contaService.aplicarRendimentoContasPoupanca(taxaRendimento);
+            System.out.println("Rendimento aplicado com sucesso em todas as contas poupança!");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Erro: taxa de rendimento inválida.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro ao aplicar rendimento: " + e.getMessage());
+        }
+    }
+
+    public void gerarRelatorioConsolidacao() {
+        System.out.println("\n--- RELATÓRIO DE CONSOLIDAÇÃO ---");
+        
+        try {
+            RelatorioConsolidacao relatorio = contaService.gerarRelatorioConsolidacao();
+            System.out.println("\n" + relatorio.toString());
+        } catch (Exception e) {
+            System.out.println("Erro ao gerar relatório: " + e.getMessage());
+        }
+    }
+
     public TipoConta lerTipoConta(){
         System.out.println("Digite o número do tipo de conta que deseja criar:");
         List<TipoConta> tiposDeConta = contaService.listarTiposDeConta();
@@ -183,10 +316,9 @@ public class SistemaBancarioController {
                                 tipoConta.name());
         }
 
-        int tipoIdx = scanner.nextInt();
-        scanner.nextLine();
+        int tipoIdx = Integer.parseInt(scanner.nextLine());
         if(tipoIdx < 1 || tipoIdx > tiposDeConta.size()){            
-            return null;
+            throw new IllegalArgumentException("Tipo de conta inválido. Operação cancelada.");
         }
         return tiposDeConta.get(tipoIdx - 1);
     }
