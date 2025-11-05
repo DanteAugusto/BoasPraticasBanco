@@ -48,6 +48,9 @@ public class Main {
                 case 7:
                     consultarSaldo();
                     break;
+                case 8:
+                    aplicarRendimentoEmContasPoupanca();
+                    break;
                 case 0:
                     continuar = false;
                     System.out.println("Obrigado por usar o Sistema Bancário!");
@@ -76,6 +79,7 @@ public class Main {
         System.out.println("5. Realizar Depósito");
         System.out.println("6. Realizar Saque");
         System.out.println("7. Consultar Saldo");
+        System.out.println("8. Aplicar Rendimento em Contas Poupança");
         System.out.println("0. Sair");
         System.out.println("===========================================");
         System.out.print("Escolha uma opção: ");
@@ -245,6 +249,23 @@ public class Main {
             System.out.println("Erro: número da conta inválido.");
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao consultar saldo: " + e.getMessage());
+        }
+    }
+
+    private static void aplicarRendimentoEmContasPoupanca() {
+        System.out.println("\n--- APLICAR RENDIMENTO EM CONTAS POUPANÇA ---");
+        
+        try {
+            System.out.print("Digite a taxa de rendimento (em %): ");
+            double taxaRendimento = Double.parseDouble(scanner.nextLine());
+
+            contaService.aplicarRendimentoContasPoupanca(taxaRendimento);
+            System.out.println("Rendimento aplicado com sucesso em todas as contas poupança!");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Erro: taxa de rendimento inválida.");
+        } catch (IllegalArgumentException e) {
+            System.out.println("Erro ao aplicar rendimento: " + e.getMessage());
         }
     }
     
