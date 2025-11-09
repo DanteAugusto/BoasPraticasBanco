@@ -1,4 +1,4 @@
-package com.boaspraticas.banco.util.Conta;
+package com.boaspraticas.banco.util.conta;
 
 import java.util.List;
 import lombok.AllArgsConstructor;

@@ -7,8 +7,8 @@ import com.boaspraticas.banco.model.Cliente;
 import com.boaspraticas.banco.model.Conta;
 import com.boaspraticas.banco.service.ClienteService;
 import com.boaspraticas.banco.service.ContaService;
-import com.boaspraticas.banco.util.Conta.RelatorioConsolidacao;
-import com.boaspraticas.banco.util.Conta.TipoConta;
+import com.boaspraticas.banco.util.conta.RelatorioConsolidacao;
+import com.boaspraticas.banco.util.conta.TipoConta;
 
 public class SistemaBancarioController {
   private static ClienteService clienteService = new ClienteService();

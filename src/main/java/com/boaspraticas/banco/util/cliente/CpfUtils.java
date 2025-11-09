@@ -1,4 +1,4 @@
-package com.boaspraticas.banco.util.Cliente;
+package com.boaspraticas.banco.util.cliente;
 
 public class CpfUtils {
 

@@ -1,6 +1,6 @@
 package com.boaspraticas.banco.model;
 
-import com.boaspraticas.banco.util.Cliente.CpfUtils;
+import com.boaspraticas.banco.util.cliente.CpfUtils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;

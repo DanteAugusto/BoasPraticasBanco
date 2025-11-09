@@ -1,6 +1,6 @@
 package com.boaspraticas.banco.model;
 
-import com.boaspraticas.banco.util.Conta.TipoConta;
+import com.boaspraticas.banco.util.conta.TipoConta;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
