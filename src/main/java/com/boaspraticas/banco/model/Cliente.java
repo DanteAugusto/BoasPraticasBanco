@@ -15,25 +15,25 @@ public class Cliente {
   private String cpf;
 
   public Cliente(String nome, String cpf) {
-    if (isNullOrEmpty(nome)) {
+    if (ehNuloOuVazio(nome)) {
       throw new IllegalArgumentException("Nome não pode ser nulo ou vazio");
     }
-    if (isNullOrEmpty(cpf)) {
+    if (ehNuloOuVazio(cpf)) {
       throw new IllegalArgumentException("CPF não pode ser nulo ou vazio");
     }
-    if (!CpfUtils.isValidCpfFormat(cpf)) {
+    if (!CpfUtils.ehValidoCpf(cpf)) {
       throw new IllegalArgumentException("CPF deve conter exatamente 11 dígitos");
     }
 
     this.nome = nome.trim();
-    this.cpf = CpfUtils.removeNonNumericCharacters(cpf);
+    this.cpf = CpfUtils.removerCaracteresNaoNumericos(cpf);
   }
 
-  private boolean isNullOrEmpty(String input) {
+  private boolean ehNuloOuVazio(String input) {
     return (input == null || input.trim().isEmpty());
   }
 
   public String getCpfFormatado() {
-    return CpfUtils.formatCpf(cpf);
+    return CpfUtils.formatarCpf(cpf);
   }
 }

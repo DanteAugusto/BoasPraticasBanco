@@ -26,7 +26,7 @@ public class ContaService {
       throw new IllegalArgumentException("Conta com número único " + numeroUnico + " já está cadastrada");
     }
 
-    if (!CpfUtils.isValidCpfFormat(clienteCpf)) {
+    if (!CpfUtils.ehValidoCpf(clienteCpf)) {
       throw new IllegalArgumentException("CPF deve conter exatamente 11 dígitos");
     }
 
@@ -63,7 +63,7 @@ public class ContaService {
     return null;
   }
 
-  public void depositar(int numeroUnico, double valor) {
+  public void depositarValorNaConta(int numeroUnico, double valor) {
     Conta conta = buscarContaPorNumero(numeroUnico);
     if (conta == null) {
       throw new IllegalArgumentException("Conta com número " + numeroUnico + " não encontrada.");
@@ -116,7 +116,7 @@ public class ContaService {
     }
 
     sacarValorDeConta(numeroUnicoPagante, valor);
-    depositar(numeroUnicoRecebedor, valor);
+    depositarValorNaConta(numeroUnicoRecebedor, valor);
   }
 
   public double consultarSaldo(int numeroUnico) {
@@ -189,7 +189,7 @@ public class ContaService {
     double saldo = conta.getSaldo();
     double rendimento = calcularRendimento(taxaRendimento, saldo);
 
-    depositar(conta.getNumeroUnico(), rendimento);
+    depositarValorNaConta(conta.getNumeroUnico(), rendimento);
   }
 
   private double calcularRendimento(double taxaRendimento, double saldo) {

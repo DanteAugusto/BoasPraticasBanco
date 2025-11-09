@@ -197,7 +197,7 @@ public class SistemaBancarioController {
       int numUnico = Integer.parseInt(scanner.nextLine());
       System.out.print("Digite o valor a ser depositado: ");
       double valor = Double.parseDouble(scanner.nextLine());
-      contaService.depositar(numUnico, valor);
+      contaService.depositarValorNaConta(numUnico, valor);
       System.out.println("Depósito realizado com sucesso!");
 
     } catch (NumberFormatException e) {

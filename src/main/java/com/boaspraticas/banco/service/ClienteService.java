@@ -26,7 +26,7 @@ public class ClienteService {
     if (cpf == null) {
       return false;
     }
-    String cpfLimpo = CpfUtils.removeNonNumericCharacters(cpf);
+    String cpfLimpo = CpfUtils.removerCaracteresNaoNumericos(cpf);
     return clientes.stream().anyMatch(cliente -> cliente.getCpf().equals(cpfLimpo));
   }
 
@@ -35,7 +35,7 @@ public class ClienteService {
   }
 
   public Cliente buscarClientePorCpf(String cpf) {
-    String cpfLimpo = CpfUtils.removeNonNumericCharacters(cpf);
+    String cpfLimpo = CpfUtils.removerCaracteresNaoNumericos(cpf);
     return clientes.stream()
         .filter(cliente -> cliente.getCpf().equals(cpfLimpo))
         .findFirst()
