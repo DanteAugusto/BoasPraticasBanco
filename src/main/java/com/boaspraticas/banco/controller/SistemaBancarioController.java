@@ -162,8 +162,8 @@ public class SistemaBancarioController {
             System.out.println("Conta cadastrada com sucesso!");
             System.out.println("   Número Único: " + conta.getNumeroUnico());
             System.out.println("   Saldo Inicial: " + conta.getSaldo());
-            System.out.println("   Tipo de conta: " + conta.getTipo().getDescricao());
-            System.out.println("   CPF do cliente: " + conta.getCliente().getCpfFormatado());
+            System.out.println("   Tipo de conta: " + conta.getDescricaoDoTipo());
+            System.out.println("   CPF do cliente: " + conta.getCpfFormatadoDoCliente());
         } catch (IllegalArgumentException e) {
             System.out.println("Erro ao cadastrar conta: " + e.getMessage());
         }
@@ -184,9 +184,9 @@ public class SistemaBancarioController {
                 Conta conta = contas.get(idx);
                 System.out.printf("%d. Tipo: %-15s Nome do titular: %-15s CPF do titular: %s%n   Número único: %-15d Saldo: %.2f%n",
                     (idx + 1), 
-                    conta.getTipo().getDescricao(), 
-                    conta.getCliente().getNome(),
-                    conta.getCliente().getCpfFormatado(),
+                    conta.getDescricaoDoTipo(), 
+                    conta.getNomeDoCliente(),
+                    conta.getCpfFormatadoDoCliente(),
                     conta.getNumeroUnico(),
                     conta.getSaldo()
                 );

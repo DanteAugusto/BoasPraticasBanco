@@ -27,4 +27,16 @@ public abstract class Conta {
     }
 
     public abstract TipoConta getTipo();
+
+    public String getDescricaoDoTipo(){
+        return getTipo().getDescricao();
+    }
+
+    public String getNomeDoCliente(){
+        return cliente.getNome();
+    }
+
+    public String getCpfFormatadoDoCliente(){
+        return cliente.getCpfFormatado();
+    }
 }
