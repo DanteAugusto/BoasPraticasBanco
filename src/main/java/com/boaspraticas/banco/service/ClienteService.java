@@ -1,7 +1,7 @@
 package com.boaspraticas.banco.service;
 
 import com.boaspraticas.banco.model.Cliente;
-import com.boaspraticas.banco.util.cliente.CpfUtils;
+import com.boaspraticas.banco.util.Cliente.CpfUtils;
 import java.util.ArrayList;
 import java.util.List;
 

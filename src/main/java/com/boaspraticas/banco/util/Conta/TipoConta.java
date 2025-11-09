@@ -1,4 +1,4 @@
-package com.boaspraticas.banco.util.conta;
+package com.boaspraticas.banco.util.Conta;
 
 public enum TipoConta {
   CORRENTE("Corrente"),
