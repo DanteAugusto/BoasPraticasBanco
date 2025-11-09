@@ -21,75 +21,37 @@ public class ContaService {
     this.clienteService = clienteService;
   }
 
-  public Conta cadastrarConta(int numeroUnico, double saldo, String clienteCpf, TipoConta tipo) {
-    if (contaExiste(numeroUnico)) {
-      throw new IllegalArgumentException("Conta com número único " + numeroUnico + " já está cadastrada");
+  public RelatorioConsolidacao gerarRelatorioConsolidacao() {
+    List<EstatisticasTipoConta> estatisticasPorTipo = new ArrayList<>();
+
+    for (TipoConta tipo : TipoConta.values()) {
+      long quantidade = contarContasPorTipo(tipo);
+      double saldoTotal = calcularSaldoTotalPorTipo(tipo);
+
+      EstatisticasTipoConta estatistica = new EstatisticasTipoConta(tipo, (int) quantidade, saldoTotal);
+      estatisticasPorTipo.add(estatistica);
     }
 
-    if (!CpfUtils.ehValidoCpf(clienteCpf)) {
-      throw new IllegalArgumentException("CPF deve conter exatamente 11 dígitos");
-    }
+    int totalContasGeral = contas.size();
+    double saldoTotalGeral = calcularSaldoTotalBanco();
 
-    Cliente cliente = clienteService.buscarClientePorCpf(clienteCpf);
-    if (cliente == null) {
-      throw new IllegalArgumentException("Cliente com CPF " + clienteCpf + " não encontrado");
-    }
-
-    Conta novaConta = ContaFactory.criarConta(tipo, numeroUnico, saldo, cliente);
-    contas.add(novaConta);
-
-    return novaConta;
+    return new RelatorioConsolidacao(estatisticasPorTipo, totalContasGeral, saldoTotalGeral);
   }
 
-  public List<Conta> listarContas() {
-    List<Conta> contasOrdendas = ordenaContasPorSaldoDescendente();
-    return contasOrdendas;
-  }
-
-  public boolean contaExiste(int numeroUnico) {
-    return contas.stream().anyMatch(conta -> conta.getNumeroUnico() == numeroUnico);
-  }
-
-  public List<TipoConta> listarTiposDeConta() {
-    return Arrays.asList(TipoConta.values());
-  }
-
-  public Conta buscarContaPorNumero(int numeroUnico) {
-    for (Conta conta : contas) {
-      if (conta.getNumeroUnico() == numeroUnico) {
-        return conta;
-      }
-    }
-    return null;
-  }
-
-  public void depositarValorNaConta(int numeroUnico, double valor) {
-    Conta conta = buscarContaPorNumero(numeroUnico);
-    if (conta == null) {
-      throw new IllegalArgumentException("Conta com número " + numeroUnico + " não encontrada.");
-    }
-    if (valor <= 0) {
-      throw new IllegalArgumentException("O valor do depósito deve ser positivo.");
+  public void aplicarRendimentoContasPoupanca(double taxaRendimento) {
+    if (taxaRendimento <= 0) {
+      throw new IllegalArgumentException("A taxa de rendimento deve ser maior que zero");
     }
 
-    conta.setSaldo(conta.getSaldo() + valor);
-  }
-
-  public void sacarValorDeConta(int numeroUnico, double valor) {
-    if (valor <= 0) {
-      throw new IllegalArgumentException("O valor do saque deve ser positivo.");
+    List<ContaPoupanca> contasPoupanca = filtraContasPoupanca();
+    if (contasPoupanca.isEmpty()) {
+      throw new IllegalArgumentException(
+          "Não há contas poupança cadastradas para aplicar o rendimento");
     }
 
-    Conta conta = buscarContaPorNumero(numeroUnico);
-    if (conta == null) {
-      throw new IllegalArgumentException("Conta com número " + numeroUnico + " não encontrada.");
+    for (ContaPoupanca contaPoupanca : contasPoupanca) {
+      aplicarRendimento(contaPoupanca, taxaRendimento);
     }
-
-    if (conta.getSaldo() < valor) {
-      throw new IllegalArgumentException("Saldo insuficiente para realizar o saque.");
-    }
-
-    conta.setSaldo(conta.getSaldo() - valor);
   }
 
   public void transferenciaEntreContas(
@@ -119,6 +81,31 @@ public class ContaService {
     depositarValorNaConta(numeroUnicoRecebedor, valor);
   }
 
+  public List<Conta> listarContas() {
+    List<Conta> contasOrdendas = ordenaContasPorSaldoDescendente();
+    return contasOrdendas;
+  }
+
+  public Conta cadastrarConta(int numeroUnico, double saldo, String clienteCpf, TipoConta tipo) {
+    if (contaExiste(numeroUnico)) {
+      throw new IllegalArgumentException("Conta com número único " + numeroUnico + " já está cadastrada");
+    }
+
+    if (!CpfUtils.ehValidoCpf(clienteCpf)) {
+      throw new IllegalArgumentException("CPF deve conter exatamente 11 dígitos");
+    }
+
+    Cliente cliente = clienteService.buscarClientePorCpf(clienteCpf);
+    if (cliente == null) {
+      throw new IllegalArgumentException("Cliente com CPF " + clienteCpf + " não encontrado");
+    }
+
+    Conta novaConta = ContaFactory.criarConta(tipo, numeroUnico, saldo, cliente);
+    contas.add(novaConta);
+
+    return novaConta;
+  }
+
   public double consultarSaldo(int numeroUnico) {
     Conta conta = buscarContaPorNumero(numeroUnico);
     if (conta == null) {
@@ -127,37 +114,57 @@ public class ContaService {
     return conta.getSaldo();
   }
 
-  public void aplicarRendimentoContasPoupanca(double taxaRendimento) {
-    if (taxaRendimento <= 0) {
-      throw new IllegalArgumentException("A taxa de rendimento deve ser maior que zero");
+  public void sacarValorDeConta(int numeroUnico, double valor) {
+    if (valor <= 0) {
+      throw new IllegalArgumentException("O valor do saque deve ser positivo.");
     }
 
-    List<ContaPoupanca> contasPoupanca = filtraContasPoupanca();
-    if (contasPoupanca.isEmpty()) {
-      throw new IllegalArgumentException(
-          "Não há contas poupança cadastradas para aplicar o rendimento");
+    Conta conta = buscarContaPorNumero(numeroUnico);
+    if (conta == null) {
+      throw new IllegalArgumentException("Conta com número " + numeroUnico + " não encontrada.");
     }
 
-    for (ContaPoupanca contaPoupanca : contasPoupanca) {
-      aplicarRendimento(contaPoupanca, taxaRendimento);
+    if (conta.getSaldo() < valor) {
+      throw new IllegalArgumentException("Saldo insuficiente para realizar o saque.");
     }
+
+    conta.setSaldo(conta.getSaldo() - valor);
   }
 
-  public RelatorioConsolidacao gerarRelatorioConsolidacao() {
-    List<EstatisticasTipoConta> estatisticasPorTipo = new ArrayList<>();
+  private void aplicarRendimento(ContaPoupanca conta, double taxaRendimento) {
+    double saldo = conta.getSaldo();
+    double rendimento = calcularRendimento(taxaRendimento, saldo);
 
-    for (TipoConta tipo : TipoConta.values()) {
-      long quantidade = contarContasPorTipo(tipo);
-      double saldoTotal = calcularSaldoTotalPorTipo(tipo);
+    depositarValorNaConta(conta.getNumeroUnico(), rendimento);
+  }
 
-      EstatisticasTipoConta estatistica = new EstatisticasTipoConta(tipo, (int) quantidade, saldoTotal);
-      estatisticasPorTipo.add(estatistica);
+  public void depositarValorNaConta(int numeroUnico, double valor) {
+    Conta conta = buscarContaPorNumero(numeroUnico);
+    if (conta == null) {
+      throw new IllegalArgumentException("Conta com número " + numeroUnico + " não encontrada.");
+    }
+    if (valor <= 0) {
+      throw new IllegalArgumentException("O valor do depósito deve ser positivo.");
     }
 
-    int totalContasGeral = contas.size();
-    double saldoTotalGeral = calcularSaldoTotalBanco();
+    conta.setSaldo(conta.getSaldo() + valor);
+  }
 
-    return new RelatorioConsolidacao(estatisticasPorTipo, totalContasGeral, saldoTotalGeral);
+  public boolean contaExiste(int numeroUnico) {
+    return contas.stream().anyMatch(conta -> conta.getNumeroUnico() == numeroUnico);
+  }
+
+  public Conta buscarContaPorNumero(int numeroUnico) {
+    for (Conta conta : contas) {
+      if (conta.getNumeroUnico() == numeroUnico) {
+        return conta;
+      }
+    }
+    return null;
+  }
+
+  public List<TipoConta> listarTiposDeConta() {
+    return Arrays.asList(TipoConta.values());
   }
 
   private long contarContasPorTipo(TipoConta tipo) {
@@ -183,13 +190,6 @@ public class ContaService {
       }
     }
     return contasPoupanca;
-  }
-
-  private void aplicarRendimento(ContaPoupanca conta, double taxaRendimento) {
-    double saldo = conta.getSaldo();
-    double rendimento = calcularRendimento(taxaRendimento, saldo);
-
-    depositarValorNaConta(conta.getNumeroUnico(), rendimento);
   }
 
   private double calcularRendimento(double taxaRendimento, double saldo) {
