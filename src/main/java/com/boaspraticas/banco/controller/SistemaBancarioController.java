@@ -24,53 +24,15 @@ public class SistemaBancarioController {
     
     while (continuar) {
       exibirMenu();
-      int opcao = lerOpcao();
-      
-      switch (opcao) {
-        case 1:
-          cadastrarCliente();
-          break;
-        case 2:
-          listarClientes();
-          break;
-        case 3:
-          cadastrarConta();
-          break;
-        case 4:
-          listarContas();
-          break;
-        case 5:
-          depositarEmConta();
-          break;
-        case 6:
-          realizarSaque();
-          break;
-        case 7:
-          realizarTransferencia();
-          break;
-        case 8:
-          consultarSaldo();
-          break;
-        case 9:
-          aplicarRendimentoEmContasPoupanca();
-          break;
-        case 10:
-          gerarRelatorioConsolidacao();
-          break;
-        case 0:
-          continuar = false;
-          System.out.println("Obrigado por usar o Sistema Bancário!");
-          break;
-        default:
-          System.out.println("Opção inválida! Tente novamente.");
-      }
+      int opcaoEscolhida = lerOpcao();
+      continuar = resolverOpcao(opcaoEscolhida);
       
       if (continuar) {
         System.out.println("\nPressione Enter para continuar...");
         scanner.nextLine();
       }
     }
-    
+
     scanner.close();
   }
 
@@ -102,15 +64,58 @@ public class SistemaBancarioController {
     }
   }
 
-  public void cadastrarCliente() {
+  private boolean resolverOpcao(int opcaoEscolhida) {
+    if (opcaoEscolhida == 0) {
+      System.out.println("Obrigado por usar o Sistema Bancário!");
+      return false;
+    }
+
+    switch (opcaoEscolhida) {
+      case 1:
+        cadastrarCliente();
+        break;
+      case 2:
+        listarClientes();
+        break;
+      case 3:
+        cadastrarConta();
+        break;
+      case 4:
+        listarContas();
+        break;
+      case 5:
+        depositarEmConta();
+        break;
+      case 6:
+        realizarSaque();
+        break;
+      case 7:
+        realizarTransferencia();
+        break;
+      case 8:
+        consultarSaldo();
+        break;
+      case 9:
+        aplicarRendimentoEmContasPoupanca();
+        break;
+      case 10:
+        gerarRelatorioConsolidacao();
+        break;
+      default:
+        System.out.println("Opção inválida! Tente novamente.");
+    }
+
+    return true;
+  }
+
+  private void cadastrarCliente() {
     System.out.println("\n--- CADASTRO DE CLIENTE ---");
     
     System.out.print("Digite o nome do cliente: ");
     String nome = scanner.nextLine();
-    
     System.out.print("Digite o CPF do cliente (apenas números ou com pontuação): ");
     String cpf = scanner.nextLine();
-    
+
     try {
       Cliente cliente = clienteService.cadastrarCliente(nome, cpf);
       System.out.println("Cliente cadastrado com sucesso!");
@@ -121,17 +126,14 @@ public class SistemaBancarioController {
     }
   }
 
-  public void listarClientes() {
+  private void listarClientes() {
     System.out.println("\n--- LISTA DE CLIENTES CADASTRADOS ---");
-    
     List<Cliente> clientes = clienteService.listarClientes();
     
     if (clientes.isEmpty()) {
       System.out.println("Nenhum cliente cadastrado no sistema.");
     } else {
       System.out.println("Total de clientes: " + clientes.size());
-      System.out.println();
-      
       for (int idx = 0; idx < clientes.size(); idx++) {
         Cliente cliente = clientes.get(idx);
         System.out.printf("%d. Nome: %-30s CPF: %s%n", 
@@ -143,19 +145,16 @@ public class SistemaBancarioController {
     }
   }
 
-  public void cadastrarConta() {
+  private void cadastrarConta() {
     System.out.println("\n--- CADASTRO DE CONTA ---");
     
     System.out.print("Digite o número único da conta: ");
     int numUnico = Integer.parseInt(scanner.nextLine());
-    
-    
     System.out.print("Digite o saldo inicial da conta: ");
     double saldoInicial = Double.parseDouble(scanner.nextLine());
-
     System.out.print("Digite o CPF do cliente dono da conta (apenas números ou com pontuação): ");
     String cpf = scanner.nextLine();
-    
+
     try {
       TipoConta tipo = lerTipoConta();        
       Conta conta = contaService.cadastrarConta(numUnico, saldoInicial, cpf, tipo);
@@ -169,17 +168,14 @@ public class SistemaBancarioController {
     }
   }
 
-  public void listarContas() {
+  private void listarContas() {
     System.out.println("\n--- LISTA DE CONTAS CADASTRADAS ---");
-    
     List<Conta> contas = contaService.listarContas();
     
     if (contas.isEmpty()) {
       System.out.println("Nenhum conta cadastrado no sistema.");
     } else {
       System.out.println("Total de contas: " + contas.size());
-      System.out.println();
-      
       for (int idx = 0; idx < contas.size(); idx++) {
         Conta conta = contas.get(idx);
         System.out.printf("%d. Tipo: %-15s Nome do titular: %-15s CPF do titular: %s%n   Número único: %-15d Saldo: %.2f%n",
@@ -194,16 +190,13 @@ public class SistemaBancarioController {
     }
   }
 
-  public void depositarEmConta() {
+  private void depositarEmConta() {
     System.out.println("\n--- DEPÓSITO EM CONTA ---");
-    
     try {
       System.out.print("Digite o número único da conta para depósito: ");
       int numUnico = Integer.parseInt(scanner.nextLine());
-
       System.out.print("Digite o valor a ser depositado: ");
       double valor = Double.parseDouble(scanner.nextLine());
-      
       contaService.depositar(numUnico, valor);
       System.out.println("Depósito realizado com sucesso!");
 
@@ -214,16 +207,13 @@ public class SistemaBancarioController {
     }
   }
 
-  public void realizarSaque() {
+  private void realizarSaque() {
     System.out.println("\n--- SAQUE EM CONTA ---");
-    
     try {
       System.out.print("Digite o número único da conta para saque: ");
       int numUnico = Integer.parseInt(scanner.nextLine());
-
       System.out.print("Digite o valor a ser sacado: ");
       double valor = Double.parseDouble(scanner.nextLine());
-      
       contaService.sacarValorDeConta(numUnico, valor);
       System.out.println("Saque realizado com sucesso!");
 
@@ -234,19 +224,15 @@ public class SistemaBancarioController {
     }
   }
 
-  public void realizarTransferencia() {
+  private void realizarTransferencia() {
     System.out.println("\n--- TRANSFERÊNCIA ENTRE CONTAS ---");
-    
     try {
       System.out.print("Digite o número único da conta pagante: ");
       int numUnicoPagante = Integer.parseInt(scanner.nextLine());
-
       System.out.print("Digite o número único da conta recebedora: ");
       int numUnicoRecebedora = Integer.parseInt(scanner.nextLine());
-
       System.out.print("Digite o valor a ser transferido: ");
       double valor = Double.parseDouble(scanner.nextLine());
-      
       contaService.transferenciaEntreContas(numUnicoPagante, numUnicoRecebedora, valor);
       System.out.println("Transferência realizada com sucesso!");
 
@@ -257,15 +243,12 @@ public class SistemaBancarioController {
     }
   }
 
-  public void consultarSaldo() {
+  private void consultarSaldo() {
     System.out.println("\n--- CONSULTA DE SALDO ---");
-    
     try {
       System.out.print("Digite o número único da conta: ");
       int numeroUnico = Integer.parseInt(scanner.nextLine());
-
       double saldoContaConsultada = contaService.consultarSaldo(numeroUnico);
-    
       System.out.println("Saldo da conta encontrada:");
       System.out.printf("   Número Único: %d%n", numeroUnico);
       System.out.printf("   Saldo: R$ %.2f%n", saldoContaConsultada);
@@ -277,13 +260,11 @@ public class SistemaBancarioController {
     }
   }
 
-  public void aplicarRendimentoEmContasPoupanca() {
+  private void aplicarRendimentoEmContasPoupanca() {
     System.out.println("\n--- APLICAR RENDIMENTO EM CONTAS POUPANÇA ---");
-    
     try {
       System.out.print("Digite a taxa de rendimento (em %): ");
       double taxaRendimento = Double.parseDouble(scanner.nextLine());
-
       contaService.aplicarRendimentoContasPoupanca(taxaRendimento);
       System.out.println("Rendimento aplicado com sucesso em todas as contas poupança!");
 
@@ -294,9 +275,8 @@ public class SistemaBancarioController {
     }
   }
 
-  public void gerarRelatorioConsolidacao() {
+  private void gerarRelatorioConsolidacao() {
     System.out.println("\n--- RELATÓRIO DE CONSOLIDAÇÃO ---");
-    
     try {
       RelatorioConsolidacao relatorio = contaService.gerarRelatorioConsolidacao();
       System.out.println("\n" + relatorio.toString());
@@ -305,7 +285,7 @@ public class SistemaBancarioController {
     }
   }
 
-  public TipoConta lerTipoConta(){
+  private TipoConta lerTipoConta(){
     System.out.println("Digite o número do tipo de conta que deseja criar:");
     List<TipoConta> tiposDeConta = contaService.listarTiposDeConta();
     int tamanhoDeTiposDeConta = tiposDeConta.size();
