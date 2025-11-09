@@ -5,9 +5,10 @@ import com.boaspraticas.banco.controller.SistemaBancarioController;
 
 
 public class Main {
-    private static SistemaBancarioController sistemaBancarioController = new SistemaBancarioController();
+  private static SistemaBancarioController sistemaBancarioController =
+      new SistemaBancarioController();
 
-    public static void main(String[] args) {
-        sistemaBancarioController.iniciarSistema();
-    }    
+  public static void main(String[] args) {
+    sistemaBancarioController.iniciarSistema();
+  }
 }

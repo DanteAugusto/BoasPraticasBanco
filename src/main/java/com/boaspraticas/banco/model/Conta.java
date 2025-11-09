@@ -1,7 +1,6 @@
 package com.boaspraticas.banco.model;
 
-import com.boaspraticas.banco.util.Conta.TipoConta;
-
+import com.boaspraticas.banco.util.conta.TipoConta;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
@@ -12,31 +11,31 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(includeFieldNames = true)
 public abstract class Conta {
-    
-    @EqualsAndHashCode.Include
-    private int numeroUnico;
 
-    private double saldo;
+  @EqualsAndHashCode.Include
+  private int numeroUnico;
 
-    private Cliente cliente;
+  private double saldo;
 
-    public Conta(int numeroUnico, double saldo, Cliente cliente) {        
-        this.numeroUnico = numeroUnico;
-        this.saldo = saldo;
-        this.cliente = cliente;
-    }
+  private Cliente cliente;
 
-    public abstract TipoConta getTipo();
+  public Conta(int numeroUnico, double saldo, Cliente cliente) {
+    this.numeroUnico = numeroUnico;
+    this.saldo = saldo;
+    this.cliente = cliente;
+  }
 
-    public String getDescricaoDoTipo(){
-        return getTipo().getDescricao();
-    }
+  public abstract TipoConta getTipo();
 
-    public String getNomeDoCliente(){
-        return cliente.getNome();
-    }
+  public String getDescricaoDoTipo() {
+    return getTipo().getDescricao();
+  }
 
-    public String getCpfFormatadoDoCliente(){
-        return cliente.getCpfFormatado();
-    }
+  public String getNomeDoCliente() {
+    return cliente.getNome();
+  }
+
+  public String getCpfFormatadoDoCliente() {
+    return cliente.getCpfFormatado();
+  }
 }

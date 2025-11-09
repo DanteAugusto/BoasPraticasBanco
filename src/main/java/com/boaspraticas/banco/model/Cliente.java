@@ -1,7 +1,6 @@
 package com.boaspraticas.banco.model;
 
-import com.boaspraticas.banco.util.Cliente.CpfUtils;
-
+import com.boaspraticas.banco.util.cliente.CpfUtils;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
@@ -10,31 +9,31 @@ import lombok.ToString;
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
 @ToString(includeFieldNames = true)
 public class Cliente {
-    private String nome;
-    
-    @EqualsAndHashCode.Include
-    private String cpf;
+  private String nome;
 
-    public Cliente(String nome, String cpf) {
-        if (isNullOrEmpty(nome)) {
-            throw new IllegalArgumentException("Nome não pode ser nulo ou vazio");
-        }
-        if (isNullOrEmpty(cpf)) {
-            throw new IllegalArgumentException("CPF não pode ser nulo ou vazio");
-        }
-        if (!CpfUtils.isValidCpfFormat(cpf)) {
-            throw new IllegalArgumentException("CPF deve conter exatamente 11 dígitos");
-        }
-        
-        this.nome = nome.trim();
-        this.cpf = CpfUtils.removeNonNumericCharacters(cpf);
+  @EqualsAndHashCode.Include
+  private String cpf;
+
+  public Cliente(String nome, String cpf) {
+    if (isNullOrEmpty(nome)) {
+      throw new IllegalArgumentException("Nome não pode ser nulo ou vazio");
+    }
+    if (isNullOrEmpty(cpf)) {
+      throw new IllegalArgumentException("CPF não pode ser nulo ou vazio");
+    }
+    if (!CpfUtils.isValidCpfFormat(cpf)) {
+      throw new IllegalArgumentException("CPF deve conter exatamente 11 dígitos");
     }
 
-    private boolean isNullOrEmpty(String input) {
-        return (input == null || input.trim().isEmpty());
-    }
+    this.nome = nome.trim();
+    this.cpf = CpfUtils.removeNonNumericCharacters(cpf);
+  }
 
-    public String getCpfFormatado() {
-        return CpfUtils.formatCpf(cpf);
-    }
+  private boolean isNullOrEmpty(String input) {
+    return (input == null || input.trim().isEmpty());
+  }
+
+  public String getCpfFormatado() {
+    return CpfUtils.formatCpf(cpf);
+  }
 }
