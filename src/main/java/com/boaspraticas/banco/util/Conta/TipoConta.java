@@ -1,16 +1,16 @@
-package com.boaspraticas.banco.util.Conta;
+package com.boaspraticas.banco.util.conta;
 
 public enum TipoConta {
-    CORRENTE("Corrente"),
-    POUPANCA("Poupança");
+  CORRENTE("Corrente"),
+  POUPANCA("Poupança");
 
-    private final String descricao;
+  private final String descricao;
 
-    TipoConta(String descricao) {
-        this.descricao = descricao;
-    }
+  TipoConta(String descricao) {
+    this.descricao = descricao;
+  }
 
-    public String getDescricao() {
-        return descricao;
-    }
+  public String getDescricao() {
+    return descricao;
+  }
 }
