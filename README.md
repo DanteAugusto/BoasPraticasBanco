@@ -1,13 +1,16 @@
+# Integrantes da equipe
+
+- Dante Augusto Bezerra Pinto
+- Henrique Lopes Fouquet
+- Paulo Vitor Lima Borges
+
 # Sistema Bancário Simples
 
 Este é um projeto da disciplina de Boas Práticas de Programação que simula um sistema bancário básico para controle de contas e operações financeiras.
 
 ## Funcionalidades Implementadas
 
-### 1. Cadastro de Cliente
-- Criar um novo cliente com nome e CPF
-
-### Funcionalidades Futuras
+- Cadastro de Cliente
 - Cadastro de contas
 - Depósito
 - Saque
@@ -36,7 +39,7 @@ src/
 ## Como Executar
 
 ### Pré-requisitos
-- Java 8 ou superior
+- Java 11 ou superior
 
 ### Compilação e Execução
 
